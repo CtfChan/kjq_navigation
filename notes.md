@@ -56,3 +56,12 @@ rostopic pub /cmd_special std_msgs/String "close" -1
 rostopic pub /cmd_special std_msgs/String "open" -1
 
 ```
+
+
+### Instructions for Demo 3
+```
+# initalize global_loc
+rosservice call /global_localization "{}"
+
+
+```

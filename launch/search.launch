@@ -1,7 +1,17 @@
 <launch>
-    <!-- conversions -->
+    <!-- Conversions -->
+    <node pkg="kjq_navigation" type="pi_bridge" name="pi_bridge" output="screen">
+    </node>
+
+    <!-- Map Server -->
+    <node name="loc_map_server" pkg="map_server" type="map_server" args="$(find kjq_navigation)/maps/bigger_map.yaml">
+        <remap from="map" to="loc_map"/>
+    </node>
+
+    <!-- Movement Node-->
     <node pkg="kjq_navigation" type="movement" name="movement" output="screen">
     </node>
     
+
 
 </launch>

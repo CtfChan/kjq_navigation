@@ -8,15 +8,37 @@ namespace kjq_navigation
 {
 
 
-float AStarPlanner::calculateHeuristic(const grid_map::Index& start, const grid_map::Index& end) {  
-    return (start.matrix()-end.matrix()).norm();
+void AStarPlanner::setMap(const nav_msgs::OccupancyGrid& msg) {
+    if (map_initialized_) return;
+    map_initialized_=true;
+    grid_map::GridMapRosConverter::fromOccupancyGrid(msg, "global", map_);
+
+    // zero out inflation
+    map_.get("inflation") = grid_map::Matrix::Zero(map_.getSize()(0), map_.getSize()(1));
+
+    // apply inflation to map
+    grid_map::Position center;
+    for (grid_map::GridMapIterator it(map_); !it.isPastEnd(); ++it) {
+        if (map_.at("global", *it) > 0.5) {
+            map_.getPosition(*it, center);
+            for (grid_map::CircleIterator iterator(map_, center, robot_radius_); !iterator.isPastEnd(); ++iterator) {
+                map_.at("inflation", *iterator) = 1.0;
+            }
+        }
+    }
+}
+
+
+
+AStarPlanner::AStarPlanner() : map_(grid_map::GridMap({"global, inflation"})) {
+
 }
 
 
 // TODO use std::move for map
 AStarPlanner::AStarPlanner(const float robot_radius, grid_map::GridMap& map) : 
-    robot_radius_(robot_radius), map_(map)  {
-    
+    robot_radius_(robot_radius), map_(map), map_initialized_(true)  {
+
     // create new layers for planning purposes
     map_.add("inflation", grid_map::Matrix::Zero(map_.getSize()(0), map_.getSize()(1)));
 
@@ -129,6 +151,11 @@ nav_msgs::Path AStarPlanner::plan(const grid_map::Position& start, const grid_ma
 
 }
 
+
+
+float AStarPlanner::calculateHeuristic(const grid_map::Index& start, const grid_map::Index& end) {  
+    return (start.matrix()-end.matrix()).norm();
+}
 
 
     

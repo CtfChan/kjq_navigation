@@ -30,8 +30,8 @@ private:
 
     void poseCallback();  // AMCL pose
 
+    void mapCallback(const nav_msgs::OccupancyGrid& msg);
 
-    
 
     // ROS nodehandle
     ros::NodeHandle& node_handle_;
@@ -43,7 +43,7 @@ private:
     RobotState state_ = RobotState::LOST;
 
     // local and global planner
-    // AStarPlanner global_;
+    AStarPlanner global_planner_;
     LocalPlanner local_planner_;
 
 

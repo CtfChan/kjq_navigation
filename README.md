@@ -20,6 +20,7 @@ rosrun kjq_navigation kjq_navigation-test
 ``` 
 sudo apt-get install ros-kinetic-grid-map
 sudo apt-get install ros-kinetic-teleop-twist-keyboard
+sudo apt-get install ros-kinetic-navigation
 
 ```
 More details here:

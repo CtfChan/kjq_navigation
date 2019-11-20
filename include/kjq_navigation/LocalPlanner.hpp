@@ -27,7 +27,6 @@ private:
 
     void publishCmdVel();
 
-
     float map_width_ = 1.0f;
     float map_length_ = 1.0f;
     float map_resolution_ = 0.015;

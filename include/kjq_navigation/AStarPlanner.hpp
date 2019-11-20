@@ -4,6 +4,7 @@
 #include <grid_map_ros/grid_map_ros.hpp>
 
 #include <nav_msgs/Path.h>
+#include <nav_msgs/OccupancyGrid.h>
 
 
 namespace kjq_navigation
@@ -11,6 +12,11 @@ namespace kjq_navigation
 
 class AStarPlanner {
 public:
+    AStarPlanner();
+
+    void setMap(const nav_msgs::OccupancyGrid& msg);
+
+    // TODO deprecate
     AStarPlanner(const float robot_radius, grid_map::GridMap& map);
 
     nav_msgs::Path plan(const grid_map::Position& start, const grid_map::Position& end);
@@ -39,6 +45,7 @@ private:
 
     // private member variables
     float robot_radius_;
+    bool map_initialized_ = false;
     grid_map::GridMap map_; // this stores global map and inflated global map
 
 };

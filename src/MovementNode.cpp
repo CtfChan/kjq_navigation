@@ -17,6 +17,9 @@ void MovementNode::laserCallback(const sensor_msgs::LaserScan& msg) {
 }
 
 
+void MovementNode::mapCallback(const nav_msgs::OccupancyGrid& msg) {
+    global_planner_.setMap(msg);
+}
 
 
 
