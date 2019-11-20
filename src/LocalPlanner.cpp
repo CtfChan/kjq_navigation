@@ -25,8 +25,6 @@ void LocalPlanner::updateLocalMap(const sensor_msgs::LaserScan& msg) {
     float range_max = msg.range_max;
     std::vector<float> ranges = msg.ranges;
 
-    std::cerr << "UPDATING LOCAL MAP" << std::endl;
-
     map_.get("local") = grid_map::Matrix::Zero(map_.getSize()(0), map_.getSize()(1));
 
     for (int i = 0; i < ranges.size(); ++i) {   
