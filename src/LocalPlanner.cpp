@@ -1,18 +1,15 @@
 #include "kjq_navigation/LocalPlanner.hpp"
 
-
+#include <iostream>
 
 namespace kjq_navigation
 {
 
+grid_map::GridMap& LocalPlanner::getLocalMap() {
+    return map_;
+}
 
-LocalPlanner::LocalPlanner(ros::NodeHandle &node_handle) : 
-        node_handle_(node_handle), map_({"local_costmap"}) {
-
-    //  publisher initialization
-    grid_map_pub_ = node_handle_.advertise<grid_map_msgs::GridMap>("/local_planner/local_costmap", 1, true);
-    safe_cmd_vel_pub_ = node_handle_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
-
+LocalPlanner::LocalPlanner() : map_({"local"}) {
     // initialize map details
     map_.setGeometry(grid_map::Length(map_width_, map_length_), map_resolution_, 
             grid_map::Position(0.0, 0.0));
@@ -28,9 +25,14 @@ void LocalPlanner::updateLocalMap(const sensor_msgs::LaserScan& msg) {
     float range_max = msg.range_max;
     std::vector<float> ranges = msg.ranges;
 
-    map_.get("local_costmap") = grid_map::Matrix::Zero(map_.getSize()(0), map_.getSize()(1));
+    std::cerr << "UPDATING LOCAL MAP" << std::endl;
 
-      for (int i = 0; i < ranges.size(); ++i) {        
+    map_.get("local") = grid_map::Matrix::Zero(map_.getSize()(0), map_.getSize()(1));
+
+    for (int i = 0; i < ranges.size(); ++i) {   
+        if(ranges[i] < 0.12)
+            continue;
+     
         // compute 3D point
         float angle = angle_min + angle_increment * i;
         float x = ranges[i] * std::cos(angle);
@@ -41,26 +43,30 @@ void LocalPlanner::updateLocalMap(const sensor_msgs::LaserScan& msg) {
         x = -x;
 
         // check in map, if so run circle iterator
-
-     
+        grid_map::Position center(x, y);
+        if (map_.isInside(center)) {
+            for (grid_map::CircleIterator iterator(map_, center, robot_radius_);
+                !iterator.isPastEnd(); ++iterator) {
+                map_.at("local", *iterator) = 1.0;
+            }
+        }
     }
-
-    publishGridMap();
 }
 
-void LocalPlanner::publishRandomCmdVel() {
+
+// void LocalPlanner::publishRandomCmdVel() {
     
-}
+// }
 
 
 
-void LocalPlanner::publishGridMap() {
-    map_.setTimestamp(ros::Time::now().toNSec());
-    grid_map_msgs::GridMap message;
-    grid_map::GridMapRosConverter::toMessage(map_, message);
-    grid_map_pub_.publish(message);
-    ROS_DEBUG("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
-}   
+// void LocalPlanner::publishGridMap() {
+//     map_.setTimestamp(ros::Time::now().toNSec());
+//     grid_map_msgs::GridMap message;
+//     grid_map::GridMapRosConverter::toMessage(map_, message);
+//     grid_map_pub_.publish(message);
+//     ROS_DEBUG("Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
+// }   
 
 
 

@@ -44,7 +44,7 @@ int main(int argc, char **argv)
         grid_map_msgs::GridMap message;
         grid_map::GridMapRosConverter::toMessage(mp, message);
         map_pub.publish(message);
-        ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
+        // ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
         ROS_INFO("Publishing Grid");
 
         path.header.stamp = ros::Time::now();

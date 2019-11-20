@@ -13,8 +13,7 @@ void AStarPlanner::setMap(const nav_msgs::OccupancyGrid& msg) {
     map_initialized_=true;
     grid_map::GridMapRosConverter::fromOccupancyGrid(msg, "global", map_);
 
-    // zero out inflation
-    map_.get("inflation") = grid_map::Matrix::Zero(map_.getSize()(0), map_.getSize()(1));
+    map_.add("inflation", grid_map::Matrix::Zero(map_.getSize()(0), map_.getSize()(1)) );
 
     // apply inflation to map
     grid_map::Position center;
@@ -27,7 +26,6 @@ void AStarPlanner::setMap(const nav_msgs::OccupancyGrid& msg) {
         }
     }
 }
-
 
 
 AStarPlanner::AStarPlanner() : map_(grid_map::GridMap({"global, inflation"})) {

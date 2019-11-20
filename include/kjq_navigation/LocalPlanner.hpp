@@ -14,15 +14,15 @@ namespace kjq_navigation
 class LocalPlanner {
 
 public:
-    LocalPlanner(ros::NodeHandle &node_handle);
+    LocalPlanner();
 
     void updateLocalMap(const sensor_msgs::LaserScan& msg);
+
+    grid_map::GridMap& getLocalMap();
 
     void publishRandomCmdVel();
 
 private:
-    // bool readParameters();
-
     void publishGridMap();
 
     void publishCmdVel();
@@ -30,7 +30,7 @@ private:
     float map_width_ = 1.0f;
     float map_length_ = 1.0f;
     float map_resolution_ = 0.015;
-    float robot_radius_ = 1.0f;
+    float robot_radius_ = 0.10f;
 
     // node handle
     ros::NodeHandle node_handle_;

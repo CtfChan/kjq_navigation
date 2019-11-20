@@ -16,12 +16,14 @@ public:
 
     void setMap(const nav_msgs::OccupancyGrid& msg);
 
-    // TODO deprecate
-    AStarPlanner(const float robot_radius, grid_map::GridMap& map);
-
     nav_msgs::Path plan(const grid_map::Position& start, const grid_map::Position& end);
 
     grid_map::GridMap& getGlobalCostMap() { return map_; }
+
+
+    // TODO deprecate
+    AStarPlanner(const float robot_radius, grid_map::GridMap& map);
+
 
 private:
     bool inMap(const grid_map::Index& idx) {
@@ -44,7 +46,7 @@ private:
 
 
     // private member variables
-    float robot_radius_;
+    float robot_radius_ = 0.1;
     bool map_initialized_ = false;
     grid_map::GridMap map_; // this stores global map and inflated global map
 
