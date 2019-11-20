@@ -2,12 +2,21 @@
     <!-- conversions -->
     <node pkg="kjq_navigation" type="pi_bridge" name="pi_bridge" output="screen">
     </node>
+
+    <!-- Static transform from laser to base-->
+    <node pkg="tf"
+        type="static_transform_publisher"
+        name="laser2base"
+        args="0 0 0.1 0 3.14159 0 base_link laser 10" />
     
     <!-- Gmapping-->
     <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen" >
         <remap from="scan" to="/scan_synced" />
         <param name="odom_frame" value="/odom" />
         <param name="base_frame" value="/base_link" />
+        <param name="map_update_interval" value="3.0" />
+        <param name="delta" value="0.02" />
+
     </node>
 
     <!-- Launch RVIZ-->

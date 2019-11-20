@@ -40,11 +40,9 @@ void LocalPlanner::updateLocalMap(const sensor_msgs::LaserScan& msg) {
         //we assume laser is directly above base link, only upside down
         x = -x;
 
-        // inflate around point
-        grid_map::Position center(x, y);
-        for (grid_map::CircleIterator iterator(map_, center, robot_radius_); !iterator.isPastEnd(); ++iterator) {
-            map_.at("local_costmap", *iterator) = 1.0;
-        }     
+        // check in map, if so run circle iterator
+
+     
     }
 
     publishGridMap();

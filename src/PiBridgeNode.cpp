@@ -1,53 +1,50 @@
-#include <ros/ros.h>
-#include <sensor_msgs/LaserScan.h>
-#include <nav_msgs/Odometry.h>
-#include <tf/transform_broadcaster.h>
 
-ros::Publisher laser_pub, odom_pub;
+#include "kjq_navigation/BiPridgeNode.hpp"
+
+namespace kjq_navigation {
 
 
-geometry_msgs::TransformStamped t;
-tf::TransformBroadcaster broadcaster;
-
-
-void scanCallback(sensor_msgs::LaserScan::Ptr msg) {
+void PiBridgeNode::scanCallback(sensor_msgs::LaserScan::Ptr msg) {
     msg->header.stamp = ros::Time::now();
-    laser_pub.publish(msg);
+    laser_pub_.publish(msg);
 }
 
-void odomCallback(nav_msgs::Odometry::Ptr msg) {
-    msg->header.stamp = ros::Time::now();
-    odom_pub.publish(msg);
+void PiBridgeNode::odomCallback(geometry_msgs::Pose::Ptr msg) {
+    t_.header.stamp = ros::Time::now();
+    t_.header.frame_id = "odom";
+    t_.child_frame_id = "base_link";
+    t_.transform.translation.x = msg->position.x;
+    t_.transform.translation.y = msg->position.y;
+    t_.transform.translation.z = msg->position.z;
+    t_.transform.rotation.x = msg->orientation.x;
+    t_.transform.rotation.y= msg->orientation.y;
+    t_.transform.rotation.z = msg->orientation.z;
+    t_.transform.rotation.w = msg->orientation.w;
 
-    t.header.stamp = msg->header.stamp;
-    t.header.frame_id = "odom";
-    t.child_frame_id = "base_link";
-    t.transform.translation.x = msg->pose.pose.position.x;
-    t.transform.translation.y = msg->pose.pose.position.y;
-    t.transform.translation.z = msg->pose.pose.position.z;
-    t.transform.rotation.x = msg->pose.pose.orientation.x;
-    t.transform.rotation.y= msg->pose.pose.orientation.y;
-    t.transform.rotation.z = msg->pose.pose.orientation.z;
-    t.transform.rotation.w = msg->pose.pose.orientation.w;
-
-    broadcaster.sendTransform(t);
+    broadcaster_.sendTransform(t_);
 }
+
+
+PiBridgeNode::PiBridgeNode(ros::NodeHandle& nh) : n_(nh) {
+    laser_sub_ = n_.subscribe("/scan", 1000, &PiBridgeNode::scanCallback, this);
+    odom_sub_ = n_.subscribe("/pose", 1000,  &PiBridgeNode::odomCallback, this);
+
+    laser_pub_ = n_.advertise<sensor_msgs::LaserScan>("/scan_synced", 1000);
+}
+
+} //
 
 int main(int argc, char  **argv) {
     ros::init(argc, argv, "pi_bridge_node");
     ros::NodeHandle n;
 
-    ros::Subscriber laser_sub = n.subscribe("/scan", 1000, scanCallback);
-    ros::Subscriber odom_sub = n.subscribe("/odom", 1000, odomCallback);
-
-    laser_pub = n.advertise<sensor_msgs::LaserScan>("/scan_synced", 1000);
-    odom_pub = n.advertise<nav_msgs::Odometry>("/odom_synced", 1000);
-
+    auto p = kjq_navigation::PiBridgeNode(n);
 
     ros::spin();
 
     return 0;
 }
+
 
 
 
