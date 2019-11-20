@@ -22,7 +22,7 @@ void MovementNode::laserCallback(const sensor_msgs::LaserScan& msg) {
 
 
 MovementNode::MovementNode(ros::NodeHandle &node_handle) : 
-    node_handle_(node_handle) {  
+    node_handle_(node_handle), local_planner_(node_handle) {  
 
     laser_sub_ = node_handle_.subscribe("/scan_synced", 1,
                                         &MovementNode::laserCallback, this);

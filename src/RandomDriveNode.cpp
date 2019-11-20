@@ -23,7 +23,6 @@ RandomDriveNode::RandomDriveNode(ros::NodeHandle &node_handle) :
     map_.setGeometry(grid_map::Length(1.0, 1.0), 0.015, grid_map::Position(0.0, 0.0));
     map_.setFrameId("base_link"); 
 
-
     ROS_INFO("Successfully launched node.");
 }
 
