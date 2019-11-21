@@ -3,9 +3,10 @@
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_broadcaster.h>
 #include "kjq_navigation/GaussSmoothen.hpp"
+#include <math.h>
 
 
-void scanCallback(sensor_msgs::LaserScan::ConstPtr msg) {
+float [] scanCallback(sensor_msgs::LaserScan::ConstPtr msg) {
     float angle_min = msg.angle_min;
     float angle_max = msg.angle_max;
     float angle_increment = msg.angle_increment;
@@ -23,6 +24,8 @@ void scanCallback(sensor_msgs::LaserScan::ConstPtr msg) {
 
 	/////////////////////////
 	//bool is_wall = true;
+    int block_angle_subtension = 10;
+    int block_found = 0;
 	double sigma = 2;
 	double samples = 10
 	ranges = gaussSmoothen(ranges, sigma, samples)
@@ -51,12 +54,28 @@ void scanCallback(sensor_msgs::LaserScan::ConstPtr msg) {
 		float disparity = ranges[i] - ranges[i-1];
         
         if (disparity < -1 * disparity_threshold){
-            far_to_close_indices.push_back(i)
+            far_to_close_indices.push_back(i);
         }
 
         if (disparity > disparity_threshold){
-            close_to_far__indices.push_back(i)
+            close_to_far__indices.push_back(i);
         }
+
+        int index_one = 0;
+        int index_two = -1;
+        for(int i = 0; i < close_to_far__indices.size(); ++i){
+            int index_one = close_to_far__indices[i]
+                        
+            for(int j = 0; j < far_to_close_indices.size(); ++j){
+                if(std::abs(index_one - far_to_close_indices[j]) <= block_angle_subtension ){
+                    block_found = 1;
+                    index_two = far_to_close_indices[j]
+                    break;
+                }
+            if(block_found) break;
+        }
+
+        if (!block_found) return null;
 
         // if (std::abs(disparity) > disparity_threshold){
 		// 	if (is_wall == true){
@@ -74,15 +93,25 @@ void scanCallback(sensor_msgs::LaserScan::ConstPtr msg) {
 		//////////
     }
 
-    for 
-		///////////
-		//float anglemin = angle_min + angle_increment*min_index;
-		//block_points[0][1] = ranges[min_index] * std::cos(anglemin);
-		//block_points[1][1] = ranges[min_index] * std::sin(anglemin);
+		/////////
+		float angle_one = angle_min + angle_increment*index_one;
+		block_points[0][0] = ranges[index_one] * std::cos(angle_one);
+		block_points[1][0] = ranges[index_one] * std::sin(angle_one);
 			
-		//block_points[0][3] = block_points[0][0] + block_points[0][2] - block_points[0][1];
-		//block_points[1][3] = block_points[1][0] + block_points[1][2] - block_points[1][1];
-		///////////
+		float angle_two = angle_min + angle_increment*index_two;
+		block_points[0][1] = ranges[index_two] * std::cos(angle_two);
+		block_points[1][1] = ranges[index_two] * std::sin(angle_two);
+
+        block_center[0] = (block_points[0][0] + block_points[0][1])/2.0;
+        block_center[1] = (block_points[1][0] + block_points[1][1])/2.0;
+		/////////
+        float distance = pow(block_center[0]*block_center[0] + block_center[1]*block_center[1], 0.5) + pow(
+            2.0, 0.5);
+
+        block_center[0] = distance * std::cos((angle_one + angle_two)/2.0);
+        block_center[1] = distance * std::sin((angle_one + angle_two)/2.0);
+
+    return block_center;
     
 }
     
