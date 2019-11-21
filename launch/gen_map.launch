@@ -1,0 +1,24 @@
+<launch>
+    <param name="/use_sim_time" value="true"/>
+
+    <!--play bag-->
+    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/christopher/map.bag"/>
+    
+    <!-- Gmapping-->
+    <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen" >
+        <remap from="scan" to="/scan_synced" />
+        <param name="odom_frame" value="/odom" />
+        <param name="base_frame" value="/base_link" />
+        <param name="map_update_interval" value="3.0" />
+        <param name="delta" value="0.02" />
+        <param name="xmin" value="1"/>
+        <param name="xmax" value="3"/>
+        <param name="ymin" value="-1.5"/>
+        <param name="xmax" value="1.5"/>
+    </node>
+
+    <!-- Launch RVIZ-->
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find kjq_navigation)/rviz/mapping.rviz" />
+
+
+</launch>

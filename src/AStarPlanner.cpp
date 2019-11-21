@@ -18,7 +18,7 @@ void AStarPlanner::setMap(const nav_msgs::OccupancyGrid& msg) {
     // apply inflation to map
     grid_map::Position center;
     for (grid_map::GridMapIterator it(map_); !it.isPastEnd(); ++it) {
-        if (map_.at("global", *it) > 0.5) {
+        if (map_.at("global", *it) > 0.0) {
             map_.getPosition(*it, center);
             for (grid_map::CircleIterator iterator(map_, center, robot_radius_); !iterator.isPastEnd(); ++iterator) {
                 map_.at("inflation", *iterator) = 1.0;
@@ -28,7 +28,7 @@ void AStarPlanner::setMap(const nav_msgs::OccupancyGrid& msg) {
 }
 
 
-AStarPlanner::AStarPlanner() : map_(grid_map::GridMap({"global, inflation"})) {
+AStarPlanner::AStarPlanner() : map_(grid_map::GridMap({"global", "inflation"})) {
 
 }
 

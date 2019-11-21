@@ -10,7 +10,7 @@
     </node>
 
     <!-- Map Server -->
-    <node name="loc_map_server" pkg="map_server" type="map_server" args="$(find kjq_navigation)/maps/bigger_map.yaml">
+    <node name="loc_map_server" pkg="map_server" type="map_server" args="$(find kjq_navigation)/maps/mymap.yaml">
         <remap from="map" to="loc_map"/>
     </node>
 
@@ -18,9 +18,8 @@
     <node pkg="kjq_navigation" type="movement" name="movement" output="screen">
     </node>
     
-    
-      <!-- Launch RVIZ-->
-    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find kjq_navigation)/rviz/milestone3.rviz" />
+    <!-- Launch RVIZ-->
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find kjq_navigation)/rviz/milestone3.rviz" output="screen"/>
 
 
 

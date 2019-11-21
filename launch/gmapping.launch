@@ -16,7 +16,10 @@
         <param name="base_frame" value="/base_link" />
         <param name="map_update_interval" value="3.0" />
         <param name="delta" value="0.02" />
-
+        <param name="xmin" value="1"/>
+        <param name="xmax" value="3"/>
+        <param name="ymin" value="-1.5"/>
+        <param name="xmax" value="1.5"/>
     </node>
 
     <!-- Launch RVIZ-->
