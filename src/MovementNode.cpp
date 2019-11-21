@@ -25,9 +25,6 @@ void MovementNode::mapCallback(const nav_msgs::OccupancyGrid& msg) {
 
 void MovementNode::publishGlobalMap() {
     auto map = global_planner_.getGlobalCostMap();
-    std::cerr << map.getSize().x() << " " <<  map.getSize().y() << std::endl;
-    std::cerr << map.getLength().x() << " " <<  map.getLength().y() << std::endl;
-
     map.setTimestamp(ros::Time::now().toNSec());
     grid_map_msgs::GridMap message;
     grid_map::GridMapRosConverter::toMessage(map, message);

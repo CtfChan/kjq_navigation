@@ -11,7 +11,6 @@
 // Declare another test
 TEST(TestSuite, testCase2)
 {
-    std::cout << "Trackkk " << std::endl;
     EXPECT_EQ(true, true);
 }
 

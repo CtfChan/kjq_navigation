@@ -3,6 +3,8 @@
 #include <queue>
 #include <unordered_set>
 
+#include <Eigen/Geometry>
+
 
 namespace kjq_navigation
 {
@@ -78,7 +80,6 @@ nav_msgs::Path AStarPlanner::plan(const grid_map::Position& start, const grid_ma
     std::unordered_map<std::string, std::string> came_from; 
     std::unordered_map<std::string, float> cost_so_far;
 
-
     open.emplace(0.0f, start_idx);
     cost_so_far[start_key] = 0.0f;
     came_from[start_key] = start_key;
@@ -143,6 +144,35 @@ nav_msgs::Path AStarPlanner::plan(const grid_map::Position& start, const grid_ma
 
         curr_key = came_from[curr_key];
     }
+
+    // generate orientation
+    for (size_t i = 0; i < path.poses.size()-1; ++i) {
+        float dx = path.poses[i+1].pose.position.x - path.poses[i].pose.position.x;
+        float dy = path.poses[i+1].pose.position.y - path.poses[i].pose.position.y;
+        float yaw = std::atan2(dy, dx);
+        
+       Eigen::Quaternionf q = q = Eigen::AngleAxisf(0, Eigen::Vector3f::UnitX())
+                            * Eigen::AngleAxisf(0, Eigen::Vector3f::UnitY())
+                            * Eigen::AngleAxisf(yaw, Eigen::Vector3f::UnitZ());
+
+        path.poses[i].pose.orientation.x = q.x();
+        path.poses[i].pose.orientation.y = q.y();
+        path.poses[i].pose.orientation.z = q.z();
+        path.poses[i].pose.orientation.w = q.w();
+        
+        if (i+1 == path.poses.size()-1) {
+            path.poses[i+1].pose.orientation.x = q.x();
+            path.poses[i+1].pose.orientation.y = q.y();
+            path.poses[i+1].pose.orientation.z = q.z();
+            path.poses[i+1].pose.orientation.w = q.w();
+        }
+
+    }
+
+    
+
+
+
 
     return path;
 

@@ -5,6 +5,7 @@
     <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/christopher/map.bag"/>
     
     <!-- Gmapping-->
+    <!-- Maps are huge, crop it with GIMP -->
     <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen" >
         <remap from="scan" to="/scan_synced" />
         <param name="odom_frame" value="/odom" />
