@@ -60,8 +60,18 @@ rostopic pub /cmd_special std_msgs/String "open" -1
 
 ### Instructions for Demo 3
 ```
-# initalize global_loc
+
+# Terminal 1: Launch stuff on pi
+ssh ubuntu@10.42.0.1
+roslaunch yd_lidar kjq.launch
+
+# Terminal 2: Close the gripper
+roslaunch kjq_navigation localization.launch
+
+# Terminal 3: Initialize global loc
 rosservice call /global_localization "{}"
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py _speed:=0.035 _turn:=0.25
+
 
 
 ```

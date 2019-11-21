@@ -13,6 +13,8 @@ void PiBridgeNode::odomCallback(geometry_msgs::Pose::Ptr msg) {
     t_.header.stamp = ros::Time::now();
     t_.header.frame_id = "odom";
     t_.child_frame_id = "base_link";
+
+    
     t_.transform.translation.x = msg->position.x;
     t_.transform.translation.y = msg->position.y;
     t_.transform.translation.z = msg->position.z;
