@@ -96,6 +96,10 @@ add_executable(movement
     src/MovementNode.cpp
 )
 
+add_executable(detect_block
+    src/DetectBlock.cpp
+)
+
 #
 add_dependencies(random_drive
   ${catkin_EXPORTED_TARGETS}
@@ -110,6 +114,10 @@ add_dependencies(pi_bridge
 )
 
 add_dependencies(movement
+    ${catkin_EXPORTED_TARGETS}
+)
+
+add_dependencies(detect_block
     ${catkin_EXPORTED_TARGETS}
 )
 
@@ -130,6 +138,11 @@ target_link_libraries(pi_bridge
 )
 
 target_link_libraries(movement
+    ${PROJECT_NAME}_core
+    ${catkin_LIBRARIES}
+)
+
+target_link_libraries(detect_block
     ${PROJECT_NAME}_core
     ${catkin_LIBRARIES}
 )
