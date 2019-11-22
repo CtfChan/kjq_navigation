@@ -7,8 +7,8 @@ namespace kjq_navigation {
 void PiBridgeNode::scanCallback(sensor_msgs::LaserScan::Ptr msg) {
     msg->header.stamp = ros::Time::now();
 
-    std::vector<float> ranges = msg->ranges;
-    std::vector<float> intensities = msg->intensities;
+    std::vector<float> &ranges = msg->ranges;
+    std::vector<float> &intensities = msg->intensities;
 
     for (int i = 0; i < ranges.size(); ++i) {
         if (intensities[i] < 253.0) {
