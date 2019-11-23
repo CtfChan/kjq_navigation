@@ -11,7 +11,7 @@
     </node>
 
     <!-- MAP SERVER -->
-    <node name="loc_map_server" pkg="map_server" type="map_server" args="$(find kjq_navigation)/maps/bigger_map.yaml">
+    <node name="loc_map_server" pkg="map_server" type="map_server" args="$(find kjq_navigation)/maps/mymap.yaml">
         <remap from="map" to="loc_map"/>
     </node>
 

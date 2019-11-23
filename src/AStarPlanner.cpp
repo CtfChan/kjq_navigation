@@ -12,6 +12,7 @@ namespace kjq_navigation
 
 void AStarPlanner::setMap(const nav_msgs::OccupancyGrid& msg) {
     if (map_initialized_) return;
+
     map_initialized_=true;
     grid_map::GridMapRosConverter::fromOccupancyGrid(msg, "global", map_);
 
@@ -31,7 +32,7 @@ void AStarPlanner::setMap(const nav_msgs::OccupancyGrid& msg) {
 
 
 AStarPlanner::AStarPlanner() : map_(grid_map::GridMap({"global", "inflation"})) {
-
+     map_.setFrameId("map");
 }
 
 
@@ -53,6 +54,7 @@ AStarPlanner::AStarPlanner(const float robot_radius, grid_map::GridMap& map) :
         }
     }
 
+
 }
 
 
@@ -61,8 +63,12 @@ nav_msgs::Path AStarPlanner::plan(const grid_map::Position& start, const grid_ma
 
     // convert to indices
     grid_map::Index start_idx, end_idx;
-    if (map_.getIndex(start, start_idx) == false || map_.getIndex(end, end_idx) == false) {
-        ROS_ERROR("INVALID START/END POSITION FOR PLANNING!!!!");
+    if (map_.getIndex(start, start_idx) == false ) {
+        ROS_ERROR("INVALID START POSITION FOR PLANNING!!!!");
+        return path;
+    }
+    if ( map_.getIndex(end, end_idx) == false) {
+        ROS_ERROR("INVALID END POSITION FOR PLANNING!!!!");
         return path;
     }
 
@@ -145,6 +151,8 @@ nav_msgs::Path AStarPlanner::plan(const grid_map::Position& start, const grid_ma
         curr_key = came_from[curr_key];
     }
 
+    std::reverse(path.poses.begin(), path.poses.end());
+
     // generate orientation
     for (size_t i = 0; i < path.poses.size()-1; ++i) {
         float dx = path.poses[i+1].pose.position.x - path.poses[i].pose.position.x;
@@ -168,11 +176,6 @@ nav_msgs::Path AStarPlanner::plan(const grid_map::Position& start, const grid_ma
         }
 
     }
-
-    
-
-
-
 
     return path;
 

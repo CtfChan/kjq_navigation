@@ -26,6 +26,8 @@ public:
 
 
 private:
+
+
     bool inMap(const grid_map::Index& idx) {
         return idx.x() >= 0 && idx.y() >= 0 && 
                 idx.x() < map_.getSize()(0) && idx.y() < map_.getSize()(1);
