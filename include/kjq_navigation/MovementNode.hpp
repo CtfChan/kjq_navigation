@@ -44,6 +44,8 @@ private:
 
     void goalCallback(const geometry_msgs::PoseStamped& msg);
 
+    void amclPoseCallback(const geometry_msgs::PoseWithCovarianceStamped& msg);
+
     // ROS nodehandle
     ros::NodeHandle& node_handle_;
 
@@ -52,6 +54,7 @@ private:
     ros::Subscriber laser_sub_;
     ros::Subscriber init_pose_sub_;
     ros::Subscriber goal_pose_sub_;
+    ros::Subscriber amcl_pose_sub_;
 
     ros::Publisher path_pub_;
     ros::Publisher global_map_pub_;
@@ -67,6 +70,11 @@ private:
     // local and global planner
     AStarPlanner global_planner_;
     LocalPlanner local_planner_;
+
+    ros::Timer timer_;
+
+    nav_msgs::Path path_;
+    nav_msgs::Path goal_points_;
 
 
 };
