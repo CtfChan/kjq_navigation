@@ -53,8 +53,6 @@ AStarPlanner::AStarPlanner(const float robot_radius, grid_map::GridMap& map) :
             }
         }
     }
-
-
 }
 
 

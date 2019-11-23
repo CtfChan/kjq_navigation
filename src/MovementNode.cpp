@@ -33,7 +33,8 @@ void MovementNode::goalCallback(const geometry_msgs::PoseStamped& msg) {
                                      grid_map::Position(goal_.position.x, goal_.position.y) ) ;
     
     // add orientation to initial and final path
-
+    path.poses.front().pose.orientation = curr_.orientation;
+    path.poses.back().pose.orientation = goal_.orientation;
 
     path.header.stamp = ros::Time::now();
     path.header.frame_id = "map";
