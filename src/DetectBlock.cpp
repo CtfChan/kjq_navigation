@@ -65,9 +65,13 @@ float [] scanCallback(sensor_msgs::LaserScan::ConstPtr msg) {
         int index_two = -1;
         for(int i = 0; i < close_to_far__indices.size(); ++i){
             int index_one = close_to_far__indices[i]
-                        
+              
             for(int j = 0; j < far_to_close_indices.size(); ++j){
-                if(std::abs(index_one - far_to_close_indices[j]) <= block_angle_subtension ){
+		int index_two_remix = far_to_close_indices[j];
+		if( far_to_close_indices[j] + block_angle_subtension >= ranges.size()){
+			index_two_remix = far_to_close_indices[j] - ranges.size();
+		
+                if(index_one - index_two_remix <= block_angle_subtension ){
                     block_found = 1;
                     index_two = far_to_close_indices[j]
                     break;
